@@ -26,7 +26,7 @@ from src.config import get_config, ConfigLoader
 from src.failover import AutoFailoverRouter, create_failover_router, AllProvidersFailedError
 from src.semantic_cache import SemanticCache
 
-VERSION = "2.2.1"
+VERSION = "3.0.0"
 
 
 def setup_logging(verbose: bool = False) -> None:

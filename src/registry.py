@@ -150,6 +150,30 @@ class ModelRegistry:
             weaknesses=["複雜任務較弱"],
             best_for=["CONVERSATION", "TRANSLATION", "IMAGE_UNDERSTANDING"]
         ),
+        "gemini-2.0-flash": ModelInfo(
+            id="gemini-2.0-flash",
+            name="Gemini 2.0 Flash",
+            provider=Provider.GOOGLE,
+            cost_per_1k_input=0.000075,
+            cost_per_1k_output=0.0003,
+            latency_ms=300,
+            context_window=1000000,
+            strengths=["極速", "多模態", "低成本"],
+            weaknesses=["複雜推理稍弱"],
+            best_for=["CONVERSATION", "TRANSLATION", "IMAGE_UNDERSTANDING", "CODE_GENERATION"]
+        ),
+        "gemini-3.1-pro": ModelInfo(
+            id="gemini-3.1-pro",
+            name="Gemini 3.1 Pro",
+            provider=Provider.GOOGLE,
+            cost_per_1k_input=0.00125,
+            cost_per_1k_output=0.005,
+            latency_ms=1200,
+            context_window=2000000,
+            strengths=["多模態", "代碼生成", "複雜推理", "超長上下文"],
+            weaknesses=["成本偏高"],
+            best_for=["CODE_GENERATION", "DATA_ANALYSIS", "IMAGE_UNDERSTANDING", "TEXT_SUMMARIZATION"]
+        ),
         
         # MiniMax Models
         "minimax-abab6.5s-chat": ModelInfo(
@@ -175,6 +199,32 @@ class ModelRegistry:
             strengths=["中文強項", "多語言", "性價比高"],
             weaknesses=["特定領域知識有限"],
             best_for=["CONVERSATION", "TRANSLATION", "DATA_ANALYSIS"]
+        ),
+        
+        # MiniMax - Kimi Models
+        "kimi-k2.5": ModelInfo(
+            id="kimi-k2.5",
+            name="Kimi K2.5",
+            provider=Provider.MINIMAX,
+            cost_per_1k_input=0.5,
+            cost_per_1k_output=2.0,
+            latency_ms=1500,
+            context_window=200000,
+            strengths=["中文優化", "代碼生成", "複雜推理"],
+            weaknesses=["英文能力一般"],
+            best_for=["CODE_GENERATION", "CODE_REVIEW", "CONVERSATION", "DATA_ANALYSIS"]
+        ),
+        "kimi-k1.5": ModelInfo(
+            id="kimi-k1.5",
+            name="Kimi K1.5",
+            provider=Provider.MINIMAX,
+            cost_per_1k_input=0.3,
+            cost_per_1k_output=1.2,
+            latency_ms=1000,
+            context_window=128000,
+            strengths=["中文優化", "快速響應"],
+            weaknesses=["深度推理較弱"],
+            best_for=["CONVERSATION", "TRANSLATION", "TEXT_SUMMARIZATION"]
         ),
         
         # DeepSeek Models
@@ -208,11 +258,11 @@ class ModelRegistry:
     TASK_MODEL_MAP: Dict[str, List[str]] = {
         "CODE_GENERATION": [
             "claude-3-5-sonnet", "gpt-4o", "gpt-4-turbo", "claude-3-opus",
-            "deepseek-v4", "deepseek-v3"
+            "deepseek-v4", "deepseek-v3", "kimi-k2.5"
         ],
         "CODE_REVIEW": [
             "claude-3-5-sonnet", "gpt-4o", "claude-3-opus", "gpt-4-turbo",
-            "deepseek-v4"
+            "deepseek-v4", "kimi-k2.5"
         ],
         "TEXT_SUMMARIZATION": [
             "gemini-1.5-flash", "claude-3-haiku", "gpt-3.5-turbo", 
@@ -220,18 +270,18 @@ class ModelRegistry:
         ],
         "TRANSLATION": [
             "gpt-4o-mini", "claude-3-haiku", "gemini-1.5-flash",
-            "minimax-abab6.5s-chat", "gpt-3.5-turbo", "deepseek-v3"
+            "minimax-abab6.5s-chat", "gpt-3.5-turbo", "deepseek-v3", "kimi-k1.5"
         ],
         "CONVERSATION": [
             "gpt-4o-mini", "claude-3-haiku", "gemini-1.5-flash",
-            "minimax-abab6.5s-chat", "gpt-3.5-turbo", "deepseek-v3"
+            "minimax-abab6.5s-chat", "gpt-3.5-turbo", "deepseek-v3", "kimi-k1.5", "kimi-k2.5"
         ],
         "IMAGE_UNDERSTANDING": [
             "gpt-4o", "gemini-1.5-pro", "gemini-1.5-flash"
         ],
         "DATA_ANALYSIS": [
             "gpt-4o", "claude-3-opus", "gemini-1.5-pro", 
-            "minimax-abab6.5g-chat", "gpt-4-turbo", "deepseek-v4"
+            "minimax-abab6.5g-chat", "gpt-4-turbo", "deepseek-v4", "kimi-k2.5"
         ],
     }
     
