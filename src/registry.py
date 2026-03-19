@@ -86,6 +86,18 @@ class ModelRegistry:
             weaknesses=["複雜推理", "長上下文"],
             best_for=["CONVERSATION", "TRANSLATION", "TEXT_SUMMARIZATION"]
         ),
+        "gpt-4.5": ModelInfo(
+            id="gpt-4.5",
+            name="GPT-4.5",
+            provider=Provider.OPENAI,
+            cost_per_1k_input=0.01,
+            cost_per_1k_output=0.04,
+            latency_ms=2500,
+            context_window=200000,
+            strengths=["最新旗艦", "強推理", "低幻覺率"],
+            weaknesses=["成本最高"],
+            best_for=["CODE_GENERATION", "DATA_ANALYSIS", "COMPLEX_REASONING"]
+        ),
         
         # Anthropic Models
         "claude-3-5-sonnet": ModelInfo(
@@ -123,6 +135,30 @@ class ModelRegistry:
             strengths=["快速", "低成本", "日常任務"],
             weaknesses=["深度推理較弱"],
             best_for=["CONVERSATION", "TRANSLATION", "TEXT_SUMMARIZATION"]
+        ),
+        "claude-4-sonnet": ModelInfo(
+            id="claude-4-sonnet",
+            name="Claude 4 Sonnet",
+            provider=Provider.ANTHROPIC,
+            cost_per_1k_input=0.003,
+            cost_per_1k_output=0.015,
+            latency_ms=1500,
+            context_window=200000,
+            strengths=["最新版本", "強coding", "推理提升"],
+            weaknesses=["成本偏高"],
+            best_for=["CODE_GENERATION", "CODE_REVIEW", "COMPLEX_REASONING"]
+        ),
+        "claude-4-opus": ModelInfo(
+            id="claude-4-opus",
+            name="Claude 4 Opus",
+            provider=Provider.ANTHROPIC,
+            cost_per_1k_input=0.015,
+            cost_per_1k_output=0.075,
+            latency_ms=3000,
+            context_window=200000,
+            strengths=["頂級旗艦", "最强推理", "複雜任務"],
+            weaknesses=["成本極高", "延遲較高"],
+            best_for=["DATA_ANALYSIS", "COMPLEX_REASONING", "CODE_GENERATION"]
         ),
         
         # Google Models

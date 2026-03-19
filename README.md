@@ -2,26 +2,41 @@
 
 智慧模型路由系統 - 根據任務類型自動選擇最適合的 AI 模型
 
-![Version](https://img.shields.io/badge/version-2.1.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Python](https://img.shields.io/badge/python-3.8+-green)
 
 ## 功能特性
 
 | 功能 | 說明 |
 |------|------|
-| **任務分類器** | 自動識別 7 種任務類型 |
-| **模型註冊表** | 支援 OpenAI, Anthropic, Google, MiniMax |
+| **任務分類器** | 自動識別 10+ 種任務類型 |
+| **模型註冊表** | 支援 OpenAI, Anthropic, Google, MiniMax, DeepSeek (20+ 模型) |
 | **智能路由** | 基於成本、延遲、任務特性選擇最佳模型 |
-| **錯誤處理** | L1-L4 四級錯誤處理機制 |
-| **趨勢分析** | 追蹤任務分佈、模型使用、成本趨勢 |
-| **API 整合** | 統一客戶端支援多種提供商 |
-| **動態學習** | 基於歷史優化路由決策 |
-| **迴歸檢測** | 監控模型品質變化 |
+| **Smart Cache** | 語意快取，節省 30-50% 成本 |
+| **Batch Processor** | 請求批處理，提升效率 |
+| **Cost Budget Alert** | 成本預警，避免超支 |
+| **Rate Limiter** | 流量控制，保護 API 配額 |
+| **Failover** | 自動備援，確保服務不中斷 |
+| **LLM Gateway** | 統一 API 閘道 |
+| **審計日誌** | 完整請求記錄 |
+| **Prometheus** | 監控指標導出 |
+| **Docker** | 快速部署支援 |
+| **API 文檔** | 完整開發文檔 |
 
 ## 安裝
 
 ```bash
+# 方式 1: Clone 並安裝
+git clone https://github.com/johnnylugm-tech/model-router-v2.git
+cd model-router-v2
 pip install -r requirements.txt
+
+# 方式 2: Docker
+docker build -t model-router .
+docker run -p 8080:8080 model-router
+
+# 方式 3: Docker Compose
+docker-compose up -d
 ```
 
 ## 使用方法
