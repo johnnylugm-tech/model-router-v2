@@ -1,0 +1,39 @@
+# Model Router v2.1 配置範例
+# 複製此檔案到專案根目錄並根據需要修改
+
+routing:
+  # 默認路由配置
+  defaults:
+    primary: "gpt-4o-mini"  # 主要模型
+    fallback:  # Fallback 模型列表（按優先級排序）
+      - "gpt-4o"
+      - "gemini-1.5-flash"
+      - "claude-3-5-sonnet"
+  
+  # Heartbeat 任務配置（輕量級檢查）
+  heartbeat:
+    model: "gemini-1.5-flash"
+    budget: "low"
+  
+  # Subagent 任務配置（背景任務）
+  subagent:
+    model: "claude-3-haiku"
+    budget: "low"
+  
+  # 任務覆寫 - 特定任務使用指定模型
+  task_overrides:
+    CODE_REVIEW: "claude-3-5-sonnet"
+    CODE_GENERATION: "claude-3-5-sonnet"
+    TRANSLATION: "minimax-abab6.5s-chat"
+    CONVERSATION: "gpt-4o-mini"
+    DATA_ANALYSIS: "gpt-4o"
+    IMAGE_UNDERSTANDING: "gpt-4o"
+    TEXT_SUMMARIZATION: "gemini-1.5-flash"
+
+# Failover 配置
+failover:
+  enabled: true           # 啟用自動 Failover
+  max_retries: 3          # 最大重試次數
+  retry_delay: 1.0        # 初始重試延遲（秒）
+  rate_limit_retries: 5   # Rate Limit 最大重試次數
+  rate_limit_backoff: 2.0 # Rate Limit 指數退避倍數

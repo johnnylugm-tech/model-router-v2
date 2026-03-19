@@ -1,0 +1,9 @@
+# Model Router Dependencies
+
+# Core
+python-dotenv>=1.0.0
+
+# Optional: For extended model support
+# openai>=1.0.0
+# anthropic>=0.18.0
+# google-generativeai>=0.3.0
