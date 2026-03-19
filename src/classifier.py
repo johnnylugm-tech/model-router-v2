@@ -30,7 +30,19 @@ class ClassificationResult:
 
 
 class TaskClassifier:
-    """任務分類器 - 使用關鍵詞匹配識別任務類型"""
+    """任務分類器
+    
+    根據用戶輸入的任務描述，自動識別任務類型。
+    
+    支援的任務類型：
+        - CODE_GENERATION: 代碼生成
+        - CODE_REVIEW: 代碼審查
+        - TRANSLATION: 翻譯
+        - CONVERSATION: 對話
+        - DATA_ANALYSIS: 數據分析
+        - SUMMARIZATION: 摘要
+        - REASONING: 推理
+    """
     
     # 任務類型關鍵詞映射
     TASK_KEYWORDS: Dict[TaskType, List[str]] = {
@@ -82,14 +94,19 @@ class TaskClassifier:
                 self._keyword_to_tasks[keyword_lower].append(task_type)
     
     def classify(self, task: str) -> ClassificationResult:
-        """
-        ReAct Pattern: Reasoning -> Action -> Observation -> Output
+        """分類任務
+        
+        使用 ReAct Pattern 進行任務分類：
+        - Reasoning: 分析任務描述
+        - Action: 匹配關鍵詞
+        - Observation: 計算匹配分數
+        - Output: 返回分類結果
         
         Args:
             task: 任務描述
             
         Returns:
-            ClassificationResult: 分類結果
+            ClassificationResult: 分類結果，包含任務類型、置信度和匹配關鍵詞
         """
         # Reasoning: 分析任務描述
         # Action: 匹配關鍵詞
@@ -125,15 +142,19 @@ class TaskClassifier:
         
         # 計算每個任務類型的匹配分數
         scores: Dict[TaskType, Tuple[int, List[str]]] = {}
-        
+
         for keyword in matched_keywords:
             for task_type in self._keyword_to_tasks[keyword]:
                 if task_type not in scores:
                     scores[task_type] = (0, [])
                 current_score, current_keywords = scores[task_type]
                 scores[task_type] = (current_score + 1, current_keywords + [keyword])
-        
-        if not scores:
+
+        # 使用 any() 優化巢狀迴圈
+        if not any(
+            any(k in task_lower for k in keywords)
+            for keywords in self.TASK_KEYWORDS.values()
+        ):
             return ClassificationResult(
                 task_type=TaskType.UNKNOWN,
                 confidence=0.0,
