@@ -24,8 +24,9 @@ from src.learning import RoutingLearner
 from src.regression_detector import RegressionDetector
 from src.config import get_config, ConfigLoader
 from src.failover import AutoFailoverRouter, create_failover_router, AllProvidersFailedError
+from src.semantic_cache import SemanticCache
 
-VERSION = "2.1.0"
+VERSION = "2.2.0"
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -88,9 +89,20 @@ def handle_route(
     model: Optional[str],
     budget: str,
     tracker: CostTracker,
-    verbose: bool
+    verbose: bool,
+    cache: SemanticCache
 ) -> int:
     """處理路由請求"""
+    # v2.2: 語意快取 - 先檢查快取
+    cached_result = cache.get(task)
+    if cached_result:
+        print("\n" + "=" * 60)
+        print("💾 路由結果 (從快取返回)")
+        print("=" * 60)
+        print(cached_result)
+        print("=" * 60)
+        return 0
+    
     try:
         # ReAct: 推理 -> 行動 -> 觀察 -> 輸出
         result = router.route(task, budget, model)
@@ -113,6 +125,17 @@ def handle_route(
             print(result.reasoning)
         
         print("=" * 60)
+        
+        # 建構結果字串用於快取
+        result_str = f"""🤖 推薦模型: {result.model_name}
+📦 模型 ID: {result.model_id}
+🏢 提供商: {result.provider}
+💰 預估成本: ${result.estimated_cost:.4f}/1K tokens
+⏱️  預估延遲: ~{result.estimated_latency}ms
+📊 置信度: {result.confidence * 100:.0f}%"""
+        
+        # v2.2: 存入語意快取
+        cache.set(task, result_str)
         
         # 記錄請求 (估算 tokens)
         tracker.record_request(
@@ -260,6 +283,19 @@ def main() -> int:
         help="指定 Fallback 模型 (逗號分隔，例如: gpt-4o,gemini-flash)"
     )
     
+    # v2.2 新功能：語意快取
+    parser.add_argument(
+        "--cache-stats",
+        action="store_true",
+        help="顯示語意快取統計"
+    )
+    
+    parser.add_argument(
+        "--cache-clear",
+        action="store_true",
+        help="清除語意快取"
+    )
+    
     args = parser.parse_args()
     
     # 顯示版本
@@ -276,6 +312,9 @@ def main() -> int:
     registry = ModelRegistry()
     router = RouterEngine(classifier, registry, config)
     tracker = CostTracker()
+    
+    # v2.2: 語意快取
+    cache = SemanticCache(similarity_threshold=0.9)
     
     # 處理命令
     if args.list_models:
@@ -376,6 +415,24 @@ def main() -> int:
         
         return 0
     
+    # v2.2: 語意快取命令
+    if args.cache_stats:
+        print(f"\n💾 Model Router v{VERSION} - 語意快取統計")
+        print("=" * 60)
+        stats = cache.stats()
+        print(f"快取大小: {stats['size']} 筆")
+        print(f"相似度閾值: 0.9")
+        print("=" * 60)
+        return 0
+    
+    if args.cache_clear:
+        print(f"\n🗑️ Model Router v{VERSION} - 清除語意快取")
+        print("=" * 60)
+        cache.clear()
+        print("✅ 快取已清除!")
+        print("=" * 60)
+        return 0
+    
     if not args.task:
         parser.print_help()
         print(f"\n\n💡 提示: 請使用 --task 指定任務描述")
@@ -387,6 +444,8 @@ def main() -> int:
         print("   --show-config      顯示配置 (v2.1)")
         print("   --test-failover    測試 Failover (v2.1)")
         print("   --fallback         指定 Fallback 模型 (v2.1)")
+        print("   --cache-stats      顯示快取統計 (v2.2)")
+        print("   --cache-clear      清除快取 (v2.2)")
         return 1
     
     # 執行路由
@@ -396,7 +455,8 @@ def main() -> int:
         args.model,
         args.budget,
         tracker,
-        args.verbose
+        args.verbose,
+        cache
     )
 
 

@@ -14,6 +14,7 @@ class Provider(Enum):
     ANTHROPIC = "anthropic"
     GOOGLE = "google"
     MINIMAX = "minimax"
+    DEEPSEEK = "deepseek"
 
 
 @dataclass
@@ -175,15 +176,43 @@ class ModelRegistry:
             weaknesses=["特定領域知識有限"],
             best_for=["CONVERSATION", "TRANSLATION", "DATA_ANALYSIS"]
         ),
+        
+        # DeepSeek Models
+        "deepseek-v4": ModelInfo(
+            id="deepseek-v4",
+            name="DeepSeek V4",
+            provider=Provider.DEEPSEEK,
+            cost_per_1k_input=0.5,
+            cost_per_1k_output=2.0,
+            latency_ms=2000,
+            context_window=64000,
+            strengths=["代碼生成", "推理", "數學"],
+            weaknesses=["品牌認知度較低"],
+            best_for=["CODE_GENERATION", "CODE_REVIEW", "DATA_ANALYSIS"]
+        ),
+        "deepseek-v3": ModelInfo(
+            id="deepseek-v3",
+            name="DeepSeek V3",
+            provider=Provider.DEEPSEEK,
+            cost_per_1k_input=0.27,
+            cost_per_1k_output=1.1,
+            latency_ms=1000,
+            context_window=64000,
+            strengths=["代碼生成", "快速響應"],
+            weaknesses=["品牌認知度較低"],
+            best_for=["CODE_GENERATION", "CONVERSATION", "TRANSLATION"]
+        ),
     }
     
     # 任務類型到推薦模型
     TASK_MODEL_MAP: Dict[str, List[str]] = {
         "CODE_GENERATION": [
-            "claude-3-5-sonnet", "gpt-4o", "gpt-4-turbo", "claude-3-opus"
+            "claude-3-5-sonnet", "gpt-4o", "gpt-4-turbo", "claude-3-opus",
+            "deepseek-v4", "deepseek-v3"
         ],
         "CODE_REVIEW": [
-            "claude-3-5-sonnet", "gpt-4o", "claude-3-opus", "gpt-4-turbo"
+            "claude-3-5-sonnet", "gpt-4o", "claude-3-opus", "gpt-4-turbo",
+            "deepseek-v4"
         ],
         "TEXT_SUMMARIZATION": [
             "gemini-1.5-flash", "claude-3-haiku", "gpt-3.5-turbo", 
@@ -191,18 +220,18 @@ class ModelRegistry:
         ],
         "TRANSLATION": [
             "gpt-4o-mini", "claude-3-haiku", "gemini-1.5-flash",
-            "minimax-abab6.5s-chat", "gpt-3.5-turbo"
+            "minimax-abab6.5s-chat", "gpt-3.5-turbo", "deepseek-v3"
         ],
         "CONVERSATION": [
             "gpt-4o-mini", "claude-3-haiku", "gemini-1.5-flash",
-            "minimax-abab6.5s-chat", "gpt-3.5-turbo"
+            "minimax-abab6.5s-chat", "gpt-3.5-turbo", "deepseek-v3"
         ],
         "IMAGE_UNDERSTANDING": [
             "gpt-4o", "gemini-1.5-pro", "gemini-1.5-flash"
         ],
         "DATA_ANALYSIS": [
             "gpt-4o", "claude-3-opus", "gemini-1.5-pro", 
-            "minimax-abab6.5g-chat", "gpt-4-turbo"
+            "minimax-abab6.5g-chat", "gpt-4-turbo", "deepseek-v4"
         ],
     }
     
@@ -249,12 +278,13 @@ class ModelRegistry:
         """註冊新模型"""
         self._models[model.id] = model
     
-    def get_provider_name(self, provider: Provider) -> str:
+    def get_provider_name(self, provider: Enum) -> str:
         """獲取提供商顯示名稱"""
         names = {
             Provider.OPENAI: "OpenAI",
             Provider.ANTHROPIC: "Anthropic",
             Provider.GOOGLE: "Google",
             Provider.MINIMAX: "MiniMax",
+            Provider.DEEPSEEK: "DeepSeek",
         }
         return names.get(provider, str(provider))
