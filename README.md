@@ -162,7 +162,7 @@ model-router/
 統一客戶端支援：
 - OpenAI (GPT-4o, GPT-4o Mini, etc.)
 - Anthropic (Claude Sonnet, Claude Opus)
-- MiniMax (Abab 6.5s, Abab 6.5g)
+- MiniMax (Abab 6.5s, Abab 6.5g, M2.7 ⭐NEW)
 - Gemini (Gemini 2.0, Gemini 1.5)
 
 標準化錯誤處理：

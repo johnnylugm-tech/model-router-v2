@@ -236,6 +236,18 @@ class ModelRegistry:
             weaknesses=["特定領域知識有限"],
             best_for=["CONVERSATION", "TRANSLATION", "DATA_ANALYSIS"]
         ),
+        "minimax-m2.7": ModelInfo(
+            id="minimax-m2.7",
+            name="MiniMax M2.7 ⭐ NEW",
+            provider=Provider.MINIMAX,
+            cost_per_1k_input=0.0003,
+            cost_per_1k_output=0.0012,
+            latency_ms=500,
+            context_window=1000000,
+            strengths=["自進化", "軟體工程", "推理能力", "代理優化", "低成本"],
+            weaknesses=[],
+            best_for=["CODING", "AGENTS", "SOFTWARE_ENGINEERING", "REASONING", "CODE_REVIEW"]
+        ),
         
         # MiniMax - Kimi Models
         "kimi-k2.5": ModelInfo(
